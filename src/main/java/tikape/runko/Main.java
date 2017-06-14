@@ -1,13 +1,12 @@
 package tikape.runko;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.*;
 import tikape.runko.domain.*;
+import tikape.runko.view.*;
 
 public class Main {
 
@@ -31,7 +30,17 @@ public class Main {
         AiheDao aiheDao = new AiheDao(database);
         ViestiDao viestiDao = new ViestiDao(database);
 
-        // TODO tarvitaanko sivuilta "/index" ja "/index.html" ohjaus pääsivulle "/"?
+        // ADDED tiistaina 13.06.2017 klo 20:00
+        // ohjataan pyynnöt "/index" sekä "/index.html" osoitteseen "/"
+        get("/index", (req, res) -> {
+            res.redirect("/");
+            return "";
+        });         
+        get("/index.html", (req, res) -> {
+            res.redirect("/");
+            return "";
+        });          
+        
         // Käyttäjä avaa pääsivun-> näytetään kaikki alueet
         get("/", (req, res) -> {
             HashMap map = new HashMap<>(); 
@@ -39,7 +48,7 @@ public class Main {
             return new ModelAndView(map, "alueet");
         }, new ThymeleafTemplateEngine());
                  
-        // Lisätään uusi alue ja palataan pääsivulle
+        // Lisätään uusi alue ja palataan pääsivulle. Jos saman niminen alue on jo olemassa ohjataan virhe sivulle.
         post("/alue", (req, res) -> {
             String alueSelite = req.queryParams("alue").trim();           
             if (!alueSelite.isEmpty()&&alueSelite.length()<51) {

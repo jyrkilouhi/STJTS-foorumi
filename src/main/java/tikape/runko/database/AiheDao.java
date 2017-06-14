@@ -29,7 +29,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
         stmt.execute();
 
         // etsitään luodun uuden aiheen aihe_id
-        stmt = connection.prepareStatement("SELECT " + SARAKEAIHEID +" FROM Aihe "
+        stmt = connection.prepareStatement("SELECT " + SARAKEAIHEID + " FROM Aihe "
                 + "WHERE " + SARAKEALUEID + " = ? AND otsikko = ? "
                 + "ORDER BY " + SARAKEAIHEID + " DESC;");
         stmt.setObject(1, uusiAihe.getAlue_id());
@@ -140,7 +140,17 @@ public class AiheDao implements Dao<Aihe, Integer> {
     // tekemättä koska ei tarvita projektissa, vaiko TODO
     @Override
     public void delete(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        //throw new UnsupportedOperationException("Not supported yet.");
+        // pikatoteutus, joka vaatii lisätestausta ennen kuin tuotantoon!!
+        {
+            Connection connection = database.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(
+                    "DELETE FROM Aihe WHERE " + SARAKEAIHEID + " = ? ");
+            stmt.setObject(1, key);
+            stmt.execute();
 
+            stmt.close();
+            connection.close();
+        }
+    }
 }

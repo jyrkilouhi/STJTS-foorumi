@@ -73,6 +73,38 @@ public class TekstiUI {
                         System.out.println("Ei löydy aihetta: " + aiheAvain);
                     }
                     break;
+                    
+                    /* Väliaikainen testi aiheen poistolle, kts. AiheDeo.java
+                    metodi delete(key)
+                    Brutaali koodin kopiointi edeltä ja pieni muokkaus
+                    */
+                case 6:
+                    int poistettavanAiheenAvain;
+
+                    System.out.print("Anna aihe_id: ");
+                    try {
+                        poistettavanAiheenAvain = Integer.parseInt(lukija.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Virheellinen syöte!");
+                        continue;
+                    }
+                    //Aihe tmpAiheOlio;
+                    if ((tmpAiheOlio = aiheDao.findOne(poistettavanAiheenAvain)) != null) {
+                        System.out.println("Alueen id-tunnus on "
+                                + tmpAiheOlio.getAlue_id()
+                                + " ja aiheen id-tunnus on "
+                                + tmpAiheOlio.getAihe_id());
+                        for (Viesti viesti : viestiDao.findAllIn(poistettavanAiheenAvain)) {
+                            System.out.println(viesti);
+                        }
+                        aiheDao.delete(poistettavanAiheenAvain);
+                        // Huom! Aiheen viestit jäänee zonbeiksi viestit tauluun?
+                    } else {
+                        System.out.println("Ei löydy aihetta: " + poistettavanAiheenAvain);
+                    }
+                    
+                    break;
+                    
                 default:
                     System.out.println("Numerovalintaasi '" + valinta
                             + "' vastaavaa toimintoa ei löytynyt.");

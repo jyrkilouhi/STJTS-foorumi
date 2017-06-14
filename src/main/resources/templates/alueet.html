@@ -2,32 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>STJTS-Foorumi</title>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" /> 
     </head>
     <body>
         <h1>STJTS Foorumi</h1>
         <table>
-            <tr>
-                <td style="align:left; padding-right: 10px; font-weight: bold" > Alue </td>
-                <td style="align:left; padding-right: 10px; font-weight: bold" > Viestejä </td>
-                <td style="align:left; font-weight: bold" > Viimeisin viesti </td>
+            <tr style="font-weight: bold">
+                <td> Alue </td> <td></td>
+                <td> Viestit </td> <td></td>
+                <td> Viimeisin viesti </td>
             </tr>
             <tr th:each="alue: ${alueet}">
-                <td style="align:left; padding-right: 10px"> 
-                    <a th:href="${'/alueet/' + alue.alue_id}">  <span th:text="${alue.kuvaus}"> alueen kuvaus </span>  </a> </td> 
-                <td style="align:left; padding-right: 10px" th:text="${alue.viesteja}"> Alueella viestejä </td>
-                <td align="left" th:text="${alue.viimeisin}"> Viimeisin viesti </td>
+                <td> <a th:href="${'/alueet/' + alue.alue_id}">  <span th:text="${alue.kuvaus}"> alueen kuvaus </span>  </a> </td> <td></td>
+                <td th:text="${alue.viesteja}"> Alueella viestejä </td> <td></td>
+                <td th:text="${alue.viimeisin}"> Viimeisin viesti </td>
             </tr>
         </table>
-        <h3>Lisää uusi alue</h3>
+        <h3>Luo uusi alue</h3>
         <form id="uusialue" method="POST" th:action="@{~/alue}">
             <table>
-                <tr>
-                    <td><input type="text" maxlength="50" size="50" name="alue" required="true" /></td>
-                    <td>
-                        <input type="submit" value="Lisää"/>
-                    </td>
-                </tr>
+                <tr> <td><input type="text" maxlength="50" size="50" name="alue" required="true" /></td> </tr>
+                <tr> <td> <input type="submit" value="Luo alue"/> </td> </tr>
             </table>
         </form>
     </body>

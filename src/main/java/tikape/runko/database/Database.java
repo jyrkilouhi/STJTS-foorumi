@@ -67,8 +67,8 @@ public class Database {
 
         // tietokantataulujen luomiseen tarvittavat komennot suoritusjärjestyksessä      
         lista.add("CREATE TABLE Alue (alue_id SERIAL PRIMARY KEY, "
-                + "kuvaus varchar(50) NOT NULL)"
-                + "UNIQUE(kuvaus); ");
+                + "kuvaus varchar(50) NOT NULL, "
+                + "UNIQUE(kuvaus)); ");
         lista.add("INSERT INTO Alue (kuvaus) VALUES ('Postgres');");
         lista.add("CREATE TABLE Aihe (aihe_id SERIAL PRIMARY KEY, "
                 + "otsikko varchar(50) NOT NULL, "

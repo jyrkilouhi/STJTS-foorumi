@@ -6,15 +6,18 @@
     </head>
     <body>
 
-        <button onclick="location.href='/'" type="button"> Aloitussivu </button>
+        <button onclick="location.href = '/'" type="button"> Aloitussivu </button>
         <span th:if="${sivut.edellinenSivu != null}"> <button th:onclick="${sivut.edellinenSivu}" type="button"> Edellinen sivu </button> </span>
         <span th:if="${sivut.seuraavaSivu != null}"> <button th:onclick="${sivut.seuraavaSivu}" type="button"> Seuraava sivu </button>  </span>           
-            
+
         <h1>STJTS Foorumi</h1>
-        <h3> <a th:href="${'/alueet/' + alue.alue_id}"> Alue: <span th:text="${alue.kuvaus}" > Alueen kuvaus </span> </a>
-            <span> -> </span>
-            <span th:text = "${aihe.otsikko}" > Aiheen otsikko </span>
+        <h2> Alue: <a th:href="${'/alueet/' + alue.alue_id}"> 
+                <span th:text="${alue.kuvaus}" > Alueen kuvaus </span> 
+            </a>
+        </h2>
+        <h3> Aihe: <span th:text = "${aihe.otsikko}" > Aiheen otsikko </span>
         </h3>
+
         <ol start="1" th:start="${sivut.ekaRivi}+1">
             <li th:each="viesti: ${viestit} ">
                 <span th:text="${viesti.teksti}"> Viestin teksti </span> t. <span th:text="${viesti.nimimerkki}"> Nimimerkki </span>
@@ -31,7 +34,7 @@
                 <tr> <td> <input type="submit" value="Luo viesti"/> </td> </tr>
             </table>
         </form>     
-        
-     
+
+
     </body>
 </html>

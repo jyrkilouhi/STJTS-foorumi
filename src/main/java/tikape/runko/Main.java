@@ -85,18 +85,17 @@ public class Main {
             }
             
             if(alue == null) {
-                map.put("virhekoodi", "Virheellinen aluevalinta. Aluetta " + req.params("id") + " ei ole tietokannassa.");
-                map.put("uusisivu", "/");
-                map.put("sivunnimi", "Pääsivulle");
+                res.redirect("/virhe/aluevalinta/" + req.params("id"));
                 return new ModelAndView(map, "virhe");
             } else {
                 try {
                     haluttuSivu = Integer.parseInt(req.params("s"));
                     if (haluttuSivu < 1) {
-                        haluttuSivu = 1;
+                        throw new NumberFormatException();
                     }
                 } catch (NumberFormatException e) {
-                    haluttuSivu = 1;
+                    res.redirect("/alueet/" + alue_id + "/sivu/1");
+                    return new ModelAndView(map, "virhe");
                 }
                 
                 map.put("alue", alue);
@@ -164,18 +163,17 @@ public class Main {
             }
             
             if(aihe == null) {
-                map.put("virhekoodi", "Virheellinen aihevalinta. Aihetta " + req.params("id") + " ei ole tietokannassa.");
-                map.put("uusisivu", "/");
-                map.put("sivunnimi", "Pääsivulle");                
-                return new ModelAndView(map, "virhe"); 
+                res.redirect("/virhe/aihevalinta/" + req.params("id"));
+                return new ModelAndView(map, "virhe");
             } else {
                 try {
                     haluttuSivu = Integer.parseInt(req.params("s"));
                     if (haluttuSivu < 1) {
-                        haluttuSivu = 1;
+                        throw new NumberFormatException();
                     }
                 } catch (NumberFormatException e) {
-                    haluttuSivu = 1;
+                    res.redirect("/aiheet/" + aihe_id + "/sivu/1");
+                    return new ModelAndView(map, "virhe");
                 }
                 
                 map.put("alue", alueDao.findOne(aihe.getAlue_id()));
@@ -217,7 +215,7 @@ public class Main {
             return "";
         });
         
-        // POST kutsuissa tapahtunut virhe, Ohjataan siis virhe sivulle
+        // Kutsuissa tapahtunut virhe, ohjataan siis virhesivulle
         get("/virhe/:viesti/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             String viesti = req.params("viesti");
@@ -226,12 +224,22 @@ public class Main {
                 map.put("uusisivu", "/");
                 map.put("sivunnimi", "Pääsivulle");
             }
-            if(viesti.equals("aihe")) {
+            else if (viesti.equals("aluevalinta")) {
+                map.put("virhekoodi", "Virheellinen aluevalinta. Aluetta " + req.params("id") + " ei ole tietokannassa.");
+                map.put("uusisivu", "/");
+                map.put("sivunnimi", "Pääsivulle");
+            }
+            else if(viesti.equals("aihe")) {
                 map.put("virhekoodi", "Uuden keskustelun avauksen luonti epäonnistui.");
                 map.put("uusisivu", "/alueet/"+req.params("id"));
                 map.put("sivunnimi", "Takaisin aihe alueelle.");
-            }     
-           if(viesti.equals("viesti")) {
+            }
+            else if (viesti.equals("aihevalinta")) {
+                map.put("virhekoodi", "Virheellinen aihevalinta. Aihetta " + req.params("id") + " ei ole tietokannassa.");
+                map.put("uusisivu", "/");
+                map.put("sivunnimi", "Pääsivulle");
+            }
+            else if(viesti.equals("viesti")) {
                 map.put("virhekoodi", "Uuden viestin luonti epäonnistui.");
                 map.put("uusisivu", "/aiheet/"+req.params("id"));
                 map.put("sivunnimi", "Takaisin viestiketjuun.");

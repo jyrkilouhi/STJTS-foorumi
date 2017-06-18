@@ -11,10 +11,11 @@
         <span th:if="${sivut.seuraavaSivu != null}"> <button th:onclick="${sivut.seuraavaSivu}" type="button"> Seuraava sivu </button>  </span>           
        
         <h1>STJTS Foorumi</h1>
+        <h2>Alue: <span th:text="${alue.kuvaus}" > Alueen kuvaus </span></h2>
           
         <table>
             <tr style="font-weight: bold">
-                <td> Alue: <span th:text="${alue.kuvaus}" > Alueen kuvaus </span></td> <td></td>
+                <td> Aihe</td> <td></td>
                 <td> Viestit </td> <td></td>
                 <td> Viimeisin viesti </td>
             </tr>

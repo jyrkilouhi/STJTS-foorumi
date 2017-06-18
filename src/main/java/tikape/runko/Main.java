@@ -73,16 +73,31 @@ public class Main {
         // näytetään alueen ":id" avaukset sivu ":s"
         get("/alueet/:id/sivu/:s", (req, res) -> {
             HashMap map = new HashMap<>();
-            Alue alue = alueDao.findOne(Integer.parseInt(req.params("id")));
-            if(alue==null) {
+            Alue alue;
+            int alue_id = 0;
+            int haluttuSivu;
+            
+            try {
+                alue_id = Integer.parseInt(req.params("id"));
+                alue = alueDao.findOne(alue_id);
+            } catch (NumberFormatException e) {
+                alue = null;
+            }
+            
+            if(alue == null) {
                 map.put("virhekoodi", "Virheellinen aluevalinta. Aluetta " + req.params("id") + " ei ole tietokannassa.");
                 map.put("uusisivu", "/");
                 map.put("sivunnimi", "Pääsivulle");
                 return new ModelAndView(map, "virhe");
             } else {
+                try {
+                    haluttuSivu = Integer.parseInt(req.params("s"));
+                } catch (NumberFormatException e) {
+                    haluttuSivu = 1;
+                }
+                
                 map.put("alue", alue);
-                ArrayList<Aihe> kaikkiAiheet = (ArrayList) aiheDao.findAllIn(Integer.parseInt(req.params("id")));
-                int haluttuSivu = Integer.parseInt(req.params("s"));
+                ArrayList<Aihe> kaikkiAiheet = (ArrayList) aiheDao.findAllIn(alue_id);
                 Sivu sivut = new Sivu(kaikkiAiheet.size(), haluttuSivu, "location.href='/alueet/" + alue.getAlue_id() + "/sivu/", "'");
                 map.put("aiheet", kaikkiAiheet.subList(sivut.getEkaRivi(), sivut.getVikaRivi()+1));
                 map.put("sivut", sivut);
@@ -95,9 +110,23 @@ public class Main {
             String viesti = req.queryParams("viesti").trim();
             String nimimerkki = req.queryParams("nimimerkki").trim();
             String otsikko = req.queryParams("otsikko").trim();
-            int alue_id = Integer.parseInt(req.params("alue_id"));
+            int alue_id;
             
-            if (!viesti.isEmpty()&&!nimimerkki.isEmpty()&&!otsikko.isEmpty()&&viesti.length()<501&&nimimerkki.length()<26&&otsikko.length()<51&&alueDao.findOne(alue_id)!=null) {
+            try {
+                alue_id = Integer.parseInt(req.params("alue_id"));
+            } catch (NumberFormatException e) {
+                // Oletus että kelvollinen alue_id > 0 ?
+                alue_id = -1;
+            }
+            
+            if (alue_id > 0
+                    && !viesti.isEmpty()
+                    && !nimimerkki.isEmpty()
+                    && !otsikko.isEmpty()
+                    && viesti.length() < 501
+                    && nimimerkki.length() < 26
+                    && otsikko.length() < 51
+                    && alueDao.findOne(alue_id) != null) {
                 Aihe uusiAihe = new Aihe(otsikko, alue_id);
                 Aihe luotuAihe = aiheDao.create(uusiAihe); 
                 Viesti uusiViesti = new Viesti(luotuAihe.getAihe_id(), viesti, nimimerkki);

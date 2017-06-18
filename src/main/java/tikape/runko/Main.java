@@ -92,6 +92,9 @@ public class Main {
             } else {
                 try {
                     haluttuSivu = Integer.parseInt(req.params("s"));
+                    if (haluttuSivu < 1) {
+                        haluttuSivu = 1;
+                    }
                 } catch (NumberFormatException e) {
                     haluttuSivu = 1;
                 }
@@ -133,7 +136,7 @@ public class Main {
                 viestiDao.create(uusiViesti);
             } else {
                 res.redirect("/virhe/aihe/"+alue_id);
-                return "";              
+                return "";
             }
             // uusi aihe tulee listalla ensimmäiseksi joten siirrytään ko alueen listan alkuun.
             res.redirect("/alueet/"+alue_id);
@@ -149,17 +152,35 @@ public class Main {
         // näytetään aiheen ":id" viestit sivulta ":s"
         get("/aiheet/:id/sivu/:s", (req, res) -> {
             HashMap map = new HashMap<>();
-            Aihe aihe = aiheDao.findOne(Integer.parseInt(req.params("id")));   
-            if(aihe==null) {
+            Aihe aihe;
+            int aihe_id = 0;
+            int haluttuSivu;
+            
+            try {
+                aihe_id = Integer.parseInt(req.params("id"));
+                aihe = aiheDao.findOne(aihe_id);
+            } catch (NumberFormatException e) {
+                aihe = null;
+            }
+            
+            if(aihe == null) {
                 map.put("virhekoodi", "Virheellinen aihevalinta. Aihetta " + req.params("id") + " ei ole tietokannassa.");
                 map.put("uusisivu", "/");
                 map.put("sivunnimi", "Pääsivulle");                
                 return new ModelAndView(map, "virhe"); 
             } else {
+                try {
+                    haluttuSivu = Integer.parseInt(req.params("s"));
+                    if (haluttuSivu < 1) {
+                        haluttuSivu = 1;
+                    }
+                } catch (NumberFormatException e) {
+                    haluttuSivu = 1;
+                }
+                
                 map.put("alue", alueDao.findOne(aihe.getAlue_id()));
                 map.put("aihe", aihe); 
                 ArrayList<Aihe> kaikkiViestit = (ArrayList) viestiDao.findAllIn(aihe.getAihe_id());
-                int haluttuSivu = Integer.parseInt(req.params("s"));
                 Sivu sivut = new Sivu(kaikkiViestit.size(), haluttuSivu, "location.href='/aiheet/" + aihe.getAihe_id() + "/sivu/", "'");
                 map.put("viestit", kaikkiViestit.subList(sivut.getEkaRivi(), sivut.getVikaRivi()+1));          
                 map.put("sivut", sivut);
@@ -171,9 +192,20 @@ public class Main {
         post("/viesti/:aihe_id", (req, res) -> {
             String viesti = req.queryParams("viesti").trim();
             String nimimerkki = req.queryParams("nimimerkki").trim();
-            int aihe_id = Integer.parseInt(req.params("aihe_id"));
+            int aihe_id;
             
-            if (!viesti.isEmpty()&&!nimimerkki.isEmpty()&&viesti.length()<501&&nimimerkki.length()<26&&aiheDao.findOne(aihe_id)!=null) {
+            try {
+                aihe_id = Integer.parseInt(req.params("aihe_id"));
+            } catch (NumberFormatException e) {
+                aihe_id = -1;
+            }
+            
+            if (aihe_id > 0
+                    && !viesti.isEmpty()
+                    && !nimimerkki.isEmpty()
+                    && viesti.length() < 501
+                    && nimimerkki.length() < 26
+                    && aiheDao.findOne(aihe_id) != null) {
                 Viesti uusiViesti = new Viesti(aihe_id, viesti, nimimerkki);
                 viestiDao.create(uusiViesti);
             } else {

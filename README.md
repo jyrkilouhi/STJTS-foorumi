@@ -6,4 +6,5 @@
     <tr> <td> 06.06.2017 </td> <td> Jyrki </td>  <td> Adding of topics, messages etc is working </td>  </tr>
     <tr> <td> 14.06.2017 </td> <td> Jyrki </td>  <td> Git autolinked to Heroku. Page layout improved. </td>  </tr>
     <tr> <td> 18.06.2017 </td> <td> tikkapety </td>  <td> Created pre-release tag v0.2-beta </td>  </tr>
+    <tr> <td> 19.06.2017 </td> <td> Jyrki </td>  <td> Version 1.0 </td>  </tr>
 </table>
